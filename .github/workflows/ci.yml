@@ -27,3 +27,19 @@ jobs:
           test -f index.html
           echo "index.html exists successfully."
           echo "CI verification completed successfully."
+
+      - name: Slack notification - Success
+        if: success()
+        run: |
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            --data '{"text":"✅ CI Pipeline SUCCESS for devops-webapp. Commit: ${{ github.sha }}"}' \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      - name: Slack notification - Failure
+        if: failure()
+        run: |
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            --data '{"text":"❌ CI Pipeline FAILED for devops-webapp. Commit: ${{ github.sha }}"}' \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
